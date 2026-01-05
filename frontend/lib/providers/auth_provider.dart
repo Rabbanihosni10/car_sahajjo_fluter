@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import '../models/user.dart';
 import '../services/auth_service.dart';
 import '../services/api_service.dart';
@@ -64,9 +65,9 @@ class AuthProvider with ChangeNotifier {
       _user = User.fromJson(response['user']);
       _isAuthenticated = true;
       
-      // Save user data
+      // Save user data as JSON string
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(AppConfig.userKey, _user!.toJson().toString());
+      await prefs.setString(AppConfig.userKey, jsonEncode(_user!.toJson()));
 
       _isLoading = false;
       notifyListeners();
@@ -96,9 +97,9 @@ class AuthProvider with ChangeNotifier {
       _user = User.fromJson(response['user']);
       _isAuthenticated = true;
       
-      // Save user data
+      // Save user data as JSON string
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(AppConfig.userKey, _user!.toJson().toString());
+      await prefs.setString(AppConfig.userKey, jsonEncode(_user!.toJson()));
 
       _isLoading = false;
       notifyListeners();

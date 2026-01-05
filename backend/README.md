@@ -90,7 +90,7 @@ Create a `.env` file with the following:
 ```
 MONGODB_URI=your_mongodb_connection_string
 PORT=6000
-JWT_SECRET=your_jwt_secret
+JWT_SECRET=your_jwt_secret  # IMPORTANT: Use a strong random secret!
 NODE_ENV=development
 
 # Email Configuration

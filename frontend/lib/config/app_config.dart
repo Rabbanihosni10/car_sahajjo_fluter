@@ -1,7 +1,19 @@
+import 'package:flutter/foundation.dart';
+
 class AppConfig {
   // API Configuration
-  static const String baseUrl = 'http://localhost:6000/api';
-  static const String socketUrl = 'http://localhost:6000';
+  // NOTE: Update these URLs based on your environment:
+  // - For Android Emulator: use http://10.0.2.2:6000/api
+  // - For iOS Simulator: use http://localhost:6000/api  
+  // - For Physical Device: use http://YOUR_COMPUTER_IP:6000/api
+  // - For Production: use your production API URL
+  static const String baseUrl = kDebugMode 
+      ? 'http://10.0.2.2:6000/api'  // Default for Android Emulator
+      : 'https://your-production-api.com/api';
+  
+  static const String socketUrl = kDebugMode
+      ? 'http://10.0.2.2:6000'
+      : 'https://your-production-api.com';
   
   // API Endpoints
   static const String authEndpoint = '/auth';
