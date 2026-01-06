@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketService {
@@ -8,8 +9,10 @@ class SocketService {
 
   IO.Socket? _socket;
   final _messageController = StreamController<Map<String, dynamic>>.broadcast();
+  final _errorController = StreamController<String>.broadcast();
 
   Stream<Map<String, dynamic>> get messages => _messageController.stream;
+  Stream<String> get errors => _errorController.stream;
 
   bool get isConnected => _socket?.connected ?? false;
 
@@ -28,7 +31,7 @@ class SocketService {
     );
 
     _socket!.onConnect((_) {
-      print('Socket connected');
+      developer.log('Socket connected', name: 'SocketService');
     });
 
     _socket!.on('receive-message', (data) {
@@ -36,15 +39,19 @@ class SocketService {
     });
 
     _socket!.on('error', (error) {
-      print('Socket error: $error');
+      final errorMsg = 'Socket error: $error';
+      developer.log(errorMsg, name: 'SocketService', error: error);
+      _errorController.add(errorMsg);
     });
 
     _socket!.onDisconnect((_) {
-      print('Socket disconnected');
+      developer.log('Socket disconnected', name: 'SocketService');
     });
 
     _socket!.onConnectError((error) {
-      print('Connection error: $error');
+      final errorMsg = 'Connection error: $error';
+      developer.log(errorMsg, name: 'SocketService', error: error);
+      _errorController.add(errorMsg);
     });
   }
 
@@ -73,5 +80,6 @@ class SocketService {
   void dispose() {
     disconnect();
     _messageController.close();
+    _errorController.close();
   }
 }

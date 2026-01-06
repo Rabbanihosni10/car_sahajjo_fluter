@@ -55,6 +55,15 @@ class _ChatScreenState extends State<ChatScreen> {
         }
       });
 
+      // Listen for socket errors
+      _socketService.errors.listen((error) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Socket error: $error')),
+          );
+        }
+      });
+
       // Load message history
       await _loadMessages();
     } catch (e) {
