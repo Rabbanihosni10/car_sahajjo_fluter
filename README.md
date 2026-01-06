@@ -234,6 +234,37 @@ Navigator.push(
 
 ## Testing Instructions
 
+### Automated Test Client
+
+The fastest way to test the implementation is using the included automated test client:
+
+1. Install test dependencies:
+```bash
+cd backend
+npm install axios socket.io-client
+```
+
+2. Start the server in one terminal:
+```bash
+npm run dev
+```
+
+3. Run the test client in another terminal:
+```bash
+node test-client.js
+```
+
+The test client will automatically:
+- Register two test users
+- Create a chat between them
+- Connect both users via Socket.IO
+- Send messages and verify real-time delivery
+- Verify message persistence
+
+### Manual Testing
+
+If you prefer manual testing, follow these steps:
+
 ### 1. Backend Setup
 
 Configure your MongoDB URI and JWT secret in `.env` file and start the server:
