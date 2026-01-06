@@ -1,10 +1,18 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const ServiceCenter = require('../models/ServiceCenter');
 
 const router = express.Router();
 
+// Rate limiter: 30 requests per minute per IP
+const nearbyLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 30,
+  message: { error: 'Too many requests, please try again later' },
+});
+
 // GET /api/services/nearby - Get nearby service centers
-router.get('/nearby', async (req, res) => {
+router.get('/nearby', nearbyLimiter, async (req, res) => {
   try {
     const { lat, lng, maxDistance } = req.query;
     

@@ -1,11 +1,19 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const axios = require('axios');
 const authenticate = require('../middleware/authenticate');
 
 const router = express.Router();
 
+// Rate limiter: 10 requests per minute per IP
+const directionsLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10,
+  message: { error: 'Too many requests, please try again later' },
+});
+
 // POST /api/directions - Get directions from Google Directions API
-router.post('/', authenticate, async (req, res) => {
+router.post('/', directionsLimiter, authenticate, async (req, res) => {
   try {
     const { origin, destination } = req.body;
     
@@ -50,14 +58,13 @@ router.post('/', authenticate, async (req, res) => {
       distance: leg.distance,
       duration: leg.duration,
       steps: leg.steps.map(step => {
-        // Remove HTML tags and decode HTML entities from instructions
-        const instruction = step.html_instructions
-          .replace(/<[^>]*>/g, '') // Basic tag removal
-          .replace(/&nbsp;/g, ' ')
-          .replace(/&amp;/g, '&')
-          .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>')
-          .replace(/&quot;/g, '"');
+        // Extract text content by removing HTML tags
+        // Keep only the text for safe display
+        let instruction = step.html_instructions || '';
+        // Remove all HTML tags completely
+        instruction = instruction.replace(/<[^>]*>/g, ' ');
+        // Normalize whitespace
+        instruction = instruction.replace(/\s+/g, ' ').trim();
         
         return {
           instruction,
