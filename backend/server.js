@@ -4,6 +4,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const rateLimit = require('express-rate-limit');
 const Chat = require('./models/Chat');
 
 const app = express();
@@ -15,10 +16,18 @@ const io = socketIo(server, {
   }
 });
 
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.'
+});
+
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(limiter); // Apply rate limiting to all routes
 
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/car_sahajjo';
