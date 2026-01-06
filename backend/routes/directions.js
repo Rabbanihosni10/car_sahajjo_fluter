@@ -49,12 +49,23 @@ router.post('/', authenticate, async (req, res) => {
       polyline: route.overview_polyline.points,
       distance: leg.distance,
       duration: leg.duration,
-      steps: leg.steps.map(step => ({
-        instruction: step.html_instructions.replace(/<[^>]*>/g, ''), // Remove HTML tags
-        distance: step.distance,
-        duration: step.duration,
-        polyline: step.polyline.points,
-      })),
+      steps: leg.steps.map(step => {
+        // Remove HTML tags and decode HTML entities from instructions
+        const instruction = step.html_instructions
+          .replace(/<[^>]*>/g, '') // Basic tag removal
+          .replace(/&nbsp;/g, ' ')
+          .replace(/&amp;/g, '&')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&quot;/g, '"');
+        
+        return {
+          instruction,
+          distance: step.distance,
+          duration: step.duration,
+          polyline: step.polyline.points,
+        };
+      }),
     };
     
     res.json(result);

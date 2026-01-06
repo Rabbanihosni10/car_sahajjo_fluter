@@ -93,7 +93,7 @@ class _MapScreenState extends State<MapScreen> {
         _updateMarkers();
       });
     } catch (e) {
-      print('Error loading services: $e');
+      debugPrint('Error loading services: $e');
     }
   }
   

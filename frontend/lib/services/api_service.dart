@@ -2,8 +2,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  // Update this URL to match your backend server
-  static const String baseUrl = 'http://localhost:6000';
+  // Update this URL based on your environment:
+  // - Android Emulator: 'http://10.0.2.2:6000'
+  // - iOS Simulator: 'http://localhost:6000'
+  // - Physical Device: 'http://YOUR_MACHINE_IP:6000'
+  static const String baseUrl = 'http://10.0.2.2:6000';
   
   String? _authToken;
   
